@@ -1,0 +1,28 @@
+{% extends 'base_site.html' %} {% block title %}
+<title>Employee Records</title>
+{% endblock %} {% block link %}
+<a href="{% url 'login' %}" title="Admin Login">Admin Login</a>
+{% endblock %} {% block content %} {% if records %}
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Points</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for record in records %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ record.member.member_id }}</td>
+            <td>{{ record.member.first_name }} {{ record.last_name }}</td>
+            <td>{{ record.total_points }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="filler">There are no records to display...</p>
+{% endif %} {% endblock %}

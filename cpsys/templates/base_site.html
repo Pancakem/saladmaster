@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"> {% block title %} {% endblock %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/recordcss/normalize.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/recordcss/demo.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/recordcss/component.css' %}" />
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Red 5 Saladmaster
+                <span>Currency Point System</span>
+            </h1>
+            <nav class="codrops-demos">
+                {% block link %} {% endblock %}
+            </nav>
+        </header>
+        <div class="component">
+            {% block content %} {% endblock %}
+        </div>
+    </div>
+</body>
+
+</html>
