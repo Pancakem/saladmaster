@@ -1,5 +1,4 @@
 from random import randrange
-
 from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
 from django.db import models
 from django.conf import settings
@@ -60,10 +59,24 @@ class Member(models.Model):
     contract_signed = models.BooleanField(
         help_text="Contract status",
         verbose_name="Contract Status")
-    # team = models.CharField(
-    #     help_text="What team do you beong to?",
-    #     choices=[]
-    #     )
+    team = models.CharField(
+        max_length=50,
+        help_text="What team do you belong to?",
+        choices=[
+        ("Bontavita", "Bontavita"),
+        ("Red Vortex", "Red Vortex"), 
+        ("Eat Well", "Eat Well"),
+        ("Food Matters", "Food Matters"),
+        ("Warriors", "Warriors"),
+        ("HealthLine", "HealthLine"),
+        ("Gold", "Gold"),
+        ("Avator", "Avator"),
+        ("LCL", "LCL"),
+        ("Mezani", "Mezani"),
+        ("Red 5", "Red 5"),
+        ("Nourish Tanzania", "Nourish Tanzania"),
+        ("Joash Investment", "Joash Investment")]
+        )
 
     date_added = models.DateTimeField(
         auto_now=True, help_text="When Was Member's Record Added?"
@@ -72,24 +85,12 @@ class Member(models.Model):
     def __str__(self):
         return " ".join([self.first_name, self.last_name])
 
+    def teamin(self):
+        return self.team
+
 class TeamRecord(models.Model):
-    # REDEEM_OPTION_A = "Deposit On Any Personal Saladmaster Set"
-    # REDEEM_OPTION_B = "Obtain Dinner Food For Individual Sales Activity"
-    # REDEEM_OPTION_C = "Obtain Transport Voucher To & From Dinners"
-    # REDEEM_OPTION_D = "Contribute To Travel Club Accounts"
-    # REDEEM_OPTION_E = "Purchase Red 5/Saladmaster Memorabilia"
-    # REDEEM_CHOICES = (
-    #     (
-    #         (REDEEM_OPTION_A, "Deposit On Any Personal Saladmaster Set"),
-    #         (REDEEM_OPTION_B, "Obtain Dinner Food For Individual Sales Activity"),
-    #         (REDEEM_OPTION_C, "Obtain Transport Voucher To & From Dinners"),
-    #         (REDEEM_OPTION_D, "Contribute To Travel Club Accounts"),
-    #         (REDEEM_OPTION_E, "Purchase Red 5/Saladmaster Memorabilia"),
-    #     ),
-    # )
     member = models.ForeignKey(
-        Member, 
-        unique=True, 
+        Member,  
         on_delete=models.CASCADE,
         verbose_name="Member Name" )
     booking = models.PositiveSmallIntegerField(
@@ -133,21 +134,6 @@ class TeamRecord(models.Model):
         return summation
 
 
-# class ExcelRecords(models.Model):
-#     id = models.IntegerField(primary_key=True)
-#     first_column = models.TextField()
-#     second_column = models.TextField()
-#     third_column = models.TextField()
-#     fourth_column = models.TextField()
-#     fifth_column = models.TextField()
-#     sixth_column = models.TextField()
-
-#     class Meta:
-#         db_table = "excel_records"
-#         ordering = ["first_column", 'second_column']
-#         verbose_name = "Excel Record"
-
-
 class SetSold(models.Model):
     set_sold = models.CharField(
         max_length=20,
@@ -185,3 +171,49 @@ class MailingList(models.Model):
 
     class Meta:
         verbose_name_plural = "Mailing List"
+
+
+class OutputSheet(models.Model):
+    member = models.ForeignKey(
+        Member,
+        on_delete=models.CASCADE,
+        verbose_name="Member"
+        )
+    booking = models.PositiveSmallIntegerField(
+        default=0,
+        verbose_name="B"
+        )
+    cooking = models.PositiveSmallIntegerField(
+        default=0,
+        verbose_name="C"
+        )
+    sets = models.PositiveSmallIntegerField(
+        default=0,
+        verbose_name="S"
+        )
+    dinner = models.PositiveSmallIntegerField(
+        default=0,
+        verbose_name="D"
+        )
+    recruited = models.PositiveSmallIntegerField(
+        default=0,
+        verbose_name="RE"
+        )
+    CA = models.PositiveSmallIntegerField(
+        default=0,
+        verbose_name="CA"
+        )
+
+
+    class Meta:
+        verbose_name = "Record"
+        verbose_name_plural = "Sheets"
+
+    def __str__(self):
+        return " ".join([self.member.first_name, self.member.last_name])
+        
+    def team(self):
+        return self.member.team
+
+    def rank(self):
+        return self.member.type_of_member

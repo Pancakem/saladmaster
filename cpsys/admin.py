@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.db import models
-
-from .models import TeamRecord, Member, SetSold, MailingList
+from django.http import HttpResponseRedirect
+import datetime 
+from .models import TeamRecord, Member, SetSold, MailingList, OutputSheet
 
 admin.site.site_header = "Red 5 Saladmaster Admin"
 admin.site.site_title = "Red 5 Saladmaster Admin Portal"
@@ -262,3 +263,24 @@ class MailListAdmin(admin.ModelAdmin):
     "person_name",
     "email"
     ]
+
+
+@admin.register(OutputSheet)
+class OutputSheetAdmin(admin.ModelAdmin):
+    list_display = [
+    "__str__",
+    "booking",
+    "CA",
+    "recruited",
+    "cooking",
+    "sets",
+    "dinner",
+    ]
+
+    actions = [
+    "generate_file"
+    ]
+
+    def generate_file(self, request, queryset):
+        return HttpResponseRedirect("/export/xls")
+

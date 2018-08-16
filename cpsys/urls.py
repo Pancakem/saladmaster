@@ -4,12 +4,11 @@ from django.conf.urls import url
 from django.views.generic import RedirectView
 
 
-from .views import records
+from .views import records, export_data_excel
 
 urlpatterns = [
     path("records/", records, name="records"),
-    #url(r"^download/(.*)", download, name="download"),
     path("", RedirectView.as_view(url="/records/")),
     path("login/", admin.site.login, name="login"),
-    #path("upload/", UploadView.as_view()),
+    url("export/xls/$", export_data_excel, name='export')
 ]
