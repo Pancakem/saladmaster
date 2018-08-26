@@ -7,7 +7,7 @@ from .models import TeamRecord, Member, SetSold, MailingList, OutputSheet
 admin.site.site_header = "Red 5 Saladmaster Admin"
 admin.site.site_title = "Red 5 Saladmaster Admin Portal"
 admin.site.index_title = "Welcome to Red 5 Saladmaster Admin Portal"
-admin.site.disable_action("delete_selected")
+# admin.site.disable_action("delete_selected")
 
 
 @admin.register(TeamRecord)

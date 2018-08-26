@@ -5,12 +5,15 @@ from .models import TeamRecord, OutputSheet, MailingList, Member
 from django.http import HttpResponseRedirect, HttpResponse
 import xlwt
 import datetime
-from django.core.mail import send_mass_mail, EmailMessage
+from django.core.mail import send_mass_mail, EmailMessage, get_connection
 
 
+
+day_list = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
 @csrf_protect
 def records(request):
+
     all_records = TeamRecord.objects.all()
     return render(
         request,
@@ -18,16 +21,44 @@ def records(request):
         context={"records": all_records},
     )
 
-@login_required
-def export_data_excel(request):
-	"""
-		Formatting and filling excel files
-		Allowing download
-	"""
-	day_list = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-	response = HttpResponse(content_type="application/ms-excel")
-	now_ = str(datetime.datetime.now())
-	cont = 'attachment; filename="' + now_ + '".xls"'
+def add_index(_list, other_list):
+	""" Does index addition for lists"""
+
+	for i in range(6):
+		_list[i+1] += int(other_list[i+2])
+	
+
+def switch(_list, other_list, keyword):
+	""" Handles multiple if else logic for multiple lists"""
+
+	if other_list[1] == keyword:
+		add_index(_list, other_list)
+
+def send(recipient_list, filename):
+
+	connection = get_connection()
+	email = EmailMessage(
+		'Dinner Report ' + day_list[datetime.datetime.weekday(datetime.datetime.now())],
+		'Please find attached below',
+		'oumamarvin@gmail.com',
+		recipient_list,
+		attachments=filename,
+		connection=connection)
+	email.send()
+	connection.close()
+
+def write_file():
+	""""
+	Writes excel object to dwonload stream"""
+	
+	global day_list
+
+	response = HttpResponse(content_type="application/ms-excel") 
+
+	now_ = "Dinner_Report " + day_list[datetime.datetime.weekday(datetime.datetime.now())] + ".xls" 
+
+	cont = 'attachment; filename="'"Dinner_Report " + day_list[datetime.datetime.weekday(datetime.datetime.now())] + '".xls"'
+
 	response["Content-Disposition"] = cont
 
 	wb = xlwt.Workbook(encoding="utf-8")
@@ -74,109 +105,19 @@ def export_data_excel(request):
 			rows.append(str(for_row[j][i]))
 			i += 1
 
-		if rows[1] == 'Bontavita':
-			bon_list[1] += int(rows[2])
-			bon_list[2] += int(rows[3])
-			bon_list[3] += int(rows[4])
-			bon_list[4] += int(rows[5])
-			bon_list[5] += int(rows[6])
-			bon_list[6] += int(rows[7])
-
-		elif rows[1] == 'Red Vortex':
-			redv_list[1] += int(rows[2])
-			redv_list[2] += int(rows[3])
-			redv_list[3] += int(rows[4])
-			redv_list[4] += int(rows[5])
-			redv_list[5] += int(rows[6])
-			redv_list[6] += int(rows[7])
-
-		elif rows[1] == 'Eat Well':
-			eat_w_list[1] += int(rows[2])
-			eat_w_list[2] += int(rows[3])
-			eat_w_list[3] += int(rows[4])
-			eat_w_list[4] += int(rows[5])
-			eat_w_list[5] += int(rows[6])
-			eat_w_list[6] += int(rows[7])
-
-		elif rows[1] == 'Food Matters':
-			food_list[1] += int(rows[2])
-			food_list[2] += int(rows[3])
-			food_list[3] += int(rows[4])
-			food_list[4] += int(rows[5])
-			food_list[5] += int(rows[6])
-			food_list[6] += int(rows[7])
-
-		elif rows[1] == 'Warriors':
-			warr_list[1] += int(rows[2])
-			warr_list[2] += int(rows[3])
-			warr_list[3] += int(rows[4])
-			warr_list[4] += int(rows[5])
-			warr_list[5] += int(rows[6])
-			warr_list[6] += int(rows[7])
-
-		elif rows[1] == 'HealthLine':
-			hl_list[1] += int(rows[2])
-			hl_list[2] += int(rows[3])
-			hl_list[3] += int(rows[4])
-			hl_list[4] += int(rows[5])
-			hl_list[5] += int(rows[6])
-			hl_list[6] += int(rows[7])
-
-		elif rows[1] == 'Gold':
-			gold_list[1] += int(rows[2])
-			gold_list[2] += int(rows[3])
-			gold_list[3] += int(rows[4])
-			gold_list[4] += int(rows[5])
-			gold_list[5] += int(rows[6])
-			gold_list[6] += int(rows[7])
-
-		elif rows[1] == 'Avator':
-			av_list[1] += int(rows[2])
-			av_list[2] += int(rows[3])
-			av_list[3] += int(rows[4])
-			av_list[4] += int(rows[5])
-			av_list[5] += int(rows[6])
-			av_list[6] += int(rows[7])
-
-		elif rows[1] == 'LCL':
-			lcl_list[1] += int(rows[2])
-			lcl_list[2] += int(rows[3])
-			lcl_list[3] += int(rows[4])
-			lcl_list[4] += int(rows[5])
-			lcl_list[5] += int(rows[6])
-			lcl_list[6] += int(rows[7])
-
-		elif rows[1] == 'Mezani':
-			meza_list[1] += int(rows[2])
-			meza_list[2] += int(rows[3])
-			meza_list[3] += int(rows[4])
-			meza_list[4] += int(rows[5])
-			meza_list[5] += int(rows[6])
-			meza_list[6] += int(rows[7])
-
-		elif rows[1] == 'Red 5':
-			red5_list[1] += int(rows[2])
-			red5_list[2] += int(rows[3])
-			red5_list[3] += int(rows[4])
-			red5_list[4] += int(rows[5])
-			red5_list[5] += int(rows[6])
-			red5_list[6] += int(rows[7])
-
-		elif rows[1] == 'Nourish Tanzania':
-			nt_list[1] += int(rows[2])
-			nt_list[2] += int(rows[3])
-			nt_list[3] += int(rows[4])
-			nt_list[4] += int(rows[5])
-			nt_list[5] += int(rows[6])
-			nt_list[6] += int(rows[7])
-
-		elif rows[1] == 'Joash Investment':
-			ji_list[1] += int(rows[2])
-			ji_list[2] += int(rows[3])
-			ji_list[3] += int(rows[4])
-			ji_list[4] += int(rows[5])
-			ji_list[5] += int(rows[6])
-			ji_list[6] += int(rows[7])
+		switch(bon_list, rows, 'Bontavita')
+		switch(redv_list, rows, 'Red Vortex')
+		switch(eat_w_list, rows, 'Eat Well')
+		switch(food_list, rows, 'Food Matters')
+		switch(warr_list, rows, 'Warriors')
+		switch(hl_list, rows, 'Healthline')
+		switch(gold_list, rows, 'Gold')
+		switch(av_list, rows, 'Avator')
+		switch(lcl_list, rows, 'LCL')
+		switch(meza_list, rows, 'Mezani')
+		switch(red5_list, rows, 'Red 5')
+		switch(nt_list, rows,'Nourish Tanzania')
+		switch(ji_list, rows, 'Joash Investment')
 
 		all_tup.append(rows)
 		rows = []
@@ -212,11 +153,30 @@ def export_data_excel(request):
 		font_style.font.bold = True
 		ws2.write(row_num+3, col_num, total_list[col_num], font_style)
 	font_style = xlwt.XFStyle()
-
-
-
-	wb.save(response)
+	
+	
 	recipient_list = MailingList.objects.all().values_list('email')
-
+	filename = now_
+	try:
+		wb.save(filename)
+		send(recipient_list, filename)
+	except Exception as e:
+		print(e)
+		wb.save(response)
+	wb.save(response)
 	return response
-        
+	
+
+
+@login_required
+def export_data_excel(request):
+	"""
+		Formatting and add_indexing excel files
+		Allowing download
+	"""
+	# delete the entries in the table at end week
+	if day_list[datetime.date.weekday(datetime.datetime.now())].lower() == 'friday':
+		OutputSheet.objects.all().delete()
+
+	return write_file()
+
