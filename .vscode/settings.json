@@ -1,5 +1,0 @@
-{
-    "python.pythonPath": "/home/nyota/miniconda3/envs/djangovenv/bin/python",
-    "python.linting.enabled": false,
-    "python.formatting.provider": "yapf"
-}
