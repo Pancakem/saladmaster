@@ -11,15 +11,16 @@ from django.core.mail import send_mass_mail, EmailMessage, get_connection
 
 day_list = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
-@csrf_protect
-def records(request):
+# uncomment to add cover page
+# @csrf_protect
+# def records(request):
 
-    all_records = TeamRecord.objects.all()
-    return render(
-        request,
-        "cpsys/records.html",
-        context={"records": all_records},
-    )
+#     all_records = TeamRecord.objects.all()
+#     return render(
+#         request,
+#         "cpsys/records.html",
+#         context={"records": all_records},
+#     )
 
 def add_index(_list, other_list):
 	""" Does index addition for lists"""

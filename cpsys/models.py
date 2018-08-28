@@ -87,6 +87,8 @@ class Member(models.Model):
 
     def teamin(self):
         return self.team
+    class Meta:
+        db_table = "member_records"
 
 class TeamRecord(models.Model):
     member = models.ForeignKey(
@@ -119,7 +121,7 @@ class TeamRecord(models.Model):
     )
     
     class Meta:
-        #db_table = "member_records"
+        db_table = "member_stats"
         verbose_name_plural = "Member Points"
 
     def __str__(self):
